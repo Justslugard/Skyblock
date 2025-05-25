@@ -1,0 +1,63 @@
+<!--
+  MY FIRST EVER REALLL PROJECTTT AHFDHAFHDIFAHIODO -CodeSome or NRS
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Visitor Tracker</title>
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+  <h1 style="display: inline;">Visitor Offer Tracker</h1>
+  <a href="../index.html">Homepage</a>
+  <h3>This tool allows you to track the offers you have received from visitors on your garden.</h3>
+  <p>Select the crop you want to track!</p>
+  <div>
+    <div>
+      <label for="crops">Crop:</label>
+      <select id="crops">
+        <option value="">-- Select Crop --</option>
+        <option value="Wheat">Wheat</option>
+        <option value="Seed">Seed</option>
+        <option value="Carrot">Carrot</option>
+        <option value="Potato">Potato</option>
+        <option value="Wart">Nether Wart</option>
+        <option value="Melon">Melon</option>
+        <option value="Pumpkin">Pumpkin</option>
+        <option value="Cactus">Cactus</option>
+        <option value="Sugar">Sugarcane</option>
+        <option value="Cocoa">Cocoa Beans</option>
+        <option value="Mushroom">Brown Mushroom</option>
+        <option value="Mushroom2">Red Mushroom</option>
+      </select>
+      <!--
+      <button data-crop="Wheat">Enchanted Wheat</button>
+      <button data-crop="Seed">Enchanted Seed</button>
+      <button data-crop="Carrot">Enchanted Carrot</button>
+      <button data-crop="Potato">Enchanted Potato</button>
+      <button data-crop="Wart">Enchanted Nether Wart</button>
+      <button data-crop="Melon">Enchanted Melon</button>
+      <button data-crop="Pumpkin">Enchanted Pumpkin</button>
+      <button data-crop="Green">Enchanted Cactus Green</button>
+      <button data-crop="Sugar">Enchanted Sugar</button>
+      <button data-crop="Cocoa">Enchanted Cocoa Beans</button>
+      <button data-crop="Mushroom">Enchanted Brown Mushroom</button>
+      <button data-crop="Mushroom2">Enchanted Red Mushroom</button>
+      -->
+    </div>
+    <div>
+      <label for="cropsVariant" class="hidden" id="variantLabel">Variant:</label>
+      <select class="hidden" id="cropsVariant">
+        <option value="">-- Select Variant --</option>
+      </select>
+    </div>
+  </div>
+  <button id="reset">Reset</button><button id="addCrop">Add</button><button id="save">Save</button>
+  <ol id="cropList"></ol>
+  <hr>
+  <ul id="cropListDone"></ul>
+<script type="module" src="index.js"></script> 
+</body>
+</html>

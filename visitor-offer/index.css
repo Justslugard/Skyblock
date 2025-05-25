@@ -1,0 +1,18 @@
+button {
+  cursor: pointer;
+  padding: auto;
+}
+select {
+  cursor: pointer;
+  padding: auto;
+}
+.hidden {
+  display: none;
+}
+.done {
+  text-decoration: line-through;
+  opacity: 0.5;
+}
+#cropListDone {
+  list-style-type: none;
+}

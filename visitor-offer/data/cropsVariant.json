@@ -1,0 +1,14 @@
+{
+  "Wheat": ["Enchanted Wheat", "Enchanted Haybale"],
+  "Seed": ["Enchanted Seed", "Box Of Seeds"],
+  "Carrot": ["Enchanted Carrot", "Enchanted Golden Carrot"],
+  "Potato": ["Enchanted Potato", "Enchanted Baked Potato"],
+  "Melon": ["Enchanted Melon", "Enchanted Melon Block"],
+  "Pumpkin": ["Enchanted Pumpkin", "Polished Pumpkin"],
+  "Sugar": ["Enchanted Sugar", "Enchanted Sugar Cane"],
+  "Wart": ["Enchanted Nether Wart", "Mutant Nether Wart"],
+  "Cactus": ["Enchanted Cactus Green", "Enchanted Cactus"],
+  "Cocoa": ["Enchanted Cocoa Beans", "Enchanted Cookie"],
+  "Mushroom2": ["Enchanted Red Mushroom", "Enchanted Red Mushroom Block"],
+  "Mushroom": ["Enchanted Brown Mushroom", "Enchanted Brown Mushroom Block"]
+}
