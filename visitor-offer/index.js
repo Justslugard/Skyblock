@@ -2,7 +2,7 @@
 // Global Variables and 
 // Functions
 //==========================
-import { createOption, createList, fetchData, saveStorage, loadStorage, showElement, hideElement, listButton, doneButton, resetList } from "./data/functions.js";
+import { createOption, createList, fetchData, saveStorage, loadStorage, showElement, hideElement, listButton, doneButton, resetList, askPrompt } from "./data/functions.js";
 const idElements = ["cropList", "reset", "crops", "addCrop", "save", "cropsVariant", "variantLabel", "cropListDone"];
 const classElements = [".hidden", ".done"];
 const e = {};
@@ -60,29 +60,7 @@ e.addCrop.addEventListener("click", () => {
     alert("Please select a crop variant");
     return;
   }
-  let amount;
-  while (true) {
-    amount = prompt(`Please enter the amount of ${data}`);
-    if (amount === null) return;
-    amount = amount.trim();
-    if (!isNaN(amount) && amount > 0) {
-      if (sameCrop) {
-        const newAmount = parseInt(sameCrop.dataset.amount) + parseInt(amount);
-        sameCrop.dataset.amount = newAmount;
-        sameCrop.textContent = `${data}: x ${newAmount.toLocaleString()}`;
-        listButton(sameCrop, e, doneButton);
-        return;
-      }
-      console.log(`User have selected ${amount} of ${data}`);
-      amount = Number(amount);
-      const li = createList(e.cropList ,`${data}: x ${amount.toLocaleString()}`);
-      li.dataset.crop = data;
-      li.dataset.amount = amount;
-      listButton(li, e, doneButton);
-      return
-    }
-    alert("Please enter a valid number!");
-  }
+  askPrompt("Please enter the amount of " + data, e, sameCrop, cropsVariant[data].text);
 })
 
 e.reset.addEventListener("click", () => {
@@ -111,7 +89,6 @@ e.save.addEventListener("click", () => {
 window.addEventListener("load", async () => {
   const cropData = loadStorage(cropsKey["list"]);
   const cropDataDone = loadStorage(cropsKey["done"]);
-  const data = await fetchData();
   if (cropData) {
     cropData.forEach(x => {
       const li = createList(e.cropList, x.text);
@@ -129,10 +106,12 @@ window.addEventListener("load", async () => {
       doneButton(li, e, listButton);
     })
   }
-  if (!data) {
-    alert("Error loading data");
-    return;
+  try {
+    const data = await fetchData();
+    cropsVariant = data;
+    console.log("Crop data loaded successfully");
+  } catch (error) {
+    console.error("Error fetching crop data:", error);
+    alert("Failed to load crop data. Please try again later.");
   }
-  cropsVariant = data;
-  console.log("Crops Variant loaded successfully!");
 })
