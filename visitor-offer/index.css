@@ -9,11 +9,6 @@ select {
 }
 
 /* Class Selector */
-.flex {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
 .hidden {
   display: none;
 }
@@ -23,6 +18,11 @@ select {
 }
 
 /* ID Selector */
+#header {
+  text-align: center;
+  font-size: 1em;
+  margin-bottom: 20px;
+}
 #cropList {
   display: flex;
   flex-direction: column;

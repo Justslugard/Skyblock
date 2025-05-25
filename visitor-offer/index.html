@@ -13,13 +13,13 @@
   <nav>
     <a href="../index.html">Homepage</a>
   </nav>
-  <div class="flex">
+  <div id="header">
     <h1>Visitor Offer Tracker</h1>
     <h3>This tool allows you to track the offers you have received from visitors on your garden.</h3>
-    <p>Select the crop you want to track!</p>
   </div>
-  <div>
+  <div id="selectCrop">
     <div>
+      <p>Select the crop you want to track!</p>
       <label for="crops">Crop:</label>
       <select id="crops">
         <option value="">-- Select Crop --</option>
@@ -43,7 +43,7 @@
       </select>
     </div>
   </div>
-  <div>
+  <div id="cropButtons">
     <button id="reset">Reset</button>
     <button id="addCrop">Add</button>
     <button id="save">Save</button>
