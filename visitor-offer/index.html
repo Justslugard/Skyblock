@@ -10,10 +10,14 @@
   <link rel="stylesheet" href="index.css">
 </head>
 <body>
-  <h1 style="display: inline;">Visitor Offer Tracker</h1>
-  <a href="../index.html">Homepage</a>
-  <h3>This tool allows you to track the offers you have received from visitors on your garden.</h3>
-  <p>Select the crop you want to track!</p>
+  <nav>
+    <a href="../index.html">Homepage</a>
+  </nav>
+  <div class="flex">
+    <h1>Visitor Offer Tracker</h1>
+    <h3>This tool allows you to track the offers you have received from visitors on your garden.</h3>
+    <p>Select the crop you want to track!</p>
+  </div>
   <div>
     <div>
       <label for="crops">Crop:</label>
@@ -39,12 +43,14 @@
       </select>
     </div>
   </div>
-  <button id="reset">Reset</button>
-  <button id="addCrop">Add</button>
-  <button id="save">Save</button>
-  <ol id="cropList"></ol>
-  <hr>
-  <ul id="cropListDone"></ul>
+  <div>
+    <button id="reset">Reset</button>
+    <button id="addCrop">Add</button>
+    <button id="save">Save</button>
+    <ol id="cropList"></ol>
+    <hr>
+    <ul id="cropListDone"></ul>
+  </div>
 <script type="module" src="index.js"></script> 
 </body>
 </html>
