@@ -55,12 +55,16 @@ e.crops.addEventListener("change", () => {
 
 e.addCrop.addEventListener("click", () => {
   const data = e.cropsVariant.value;
-  const sameCrop = Array.from(e.cropList.children).find(x => x.dataset.crop === data);
   if (data === "") {
     alert("Please select a crop variant");
     return;
   }
-  askPrompt("Please enter the amount of " + data, e, sameCrop, cropsVariant[data].text);
+  const amount = askPrompt("Please enter the amount of " + data, e, data)
+  if (amount === undefined) return;
+  const li = createList(e.cropList, `${data}: x ${amount.toLocaleString()}`);
+  li.dataset.crop = data;
+  li.dataset.amount = amount;
+  listButton(li, e, doneButton);
 })
 
 e.reset.addEventListener("click", () => {

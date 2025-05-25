@@ -64,19 +64,11 @@ export function listButton (element, e, doneButton) {
   createButton(element, "✎").addEventListener("click", () => {
     const crop = element.dataset.crop;
     const amount = element.dataset.amount;
-    while (true) {
-      let newAmount = prompt(`Please enter the new amount of ${crop}`, amount);
-      if (newAmount === null) return;
-      newAmount = newAmount.trim();
-      if (!isNaN(newAmount) && newAmount > 0) {
-        newAmount = Number(newAmount);
-        element.textContent = `${crop}: x ${newAmount.toLocaleString()}`;
-        element.dataset.amount = newAmount;
-        listButton(element, e, doneButton);
-        return
-      }
-      alert("Please enter a valid number!");
-    }
+    const newAmount = askPrompt(`Please enter the new amount of ${crop}`, e, element, amount);
+    if (newAmount === undefined) return;
+    element.dataset.amount = newAmount;
+    element.textContent = `${crop}: x ${newAmount.toLocaleString()}`;
+    listButton(element, e, doneButton);
   })
 }
 
@@ -111,4 +103,25 @@ export function resetList (e, cropsKey, hideElement) {
   hideElement(e.variantLabel);
   localStorage.removeItem(cropsKey["list"]);
   localStorage.removeItem(cropsKey["done"]);
+}
+
+export function askPrompt (message, e, data, x = "") {
+  const sameCrop = Array.from(e.cropList.children).find(x => x.dataset.crop === data);
+  let amount;
+  while (true) {
+    amount = prompt(message, x);
+    if (amount === null) return;
+    amount = amount.trim();
+    if (!isNaN(amount) && amount > 0) {
+      if (sameCrop) {
+        const newAmount = parseInt(sameCrop.dataset.amount) + parseInt(amount);
+        sameCrop.dataset.amount = newAmount;
+        sameCrop.textContent = `${data}: x ${newAmount.toLocaleString()}`;
+        listButton(sameCrop, e, doneButton);
+        return;
+      }
+      return Number(amount);
+    }
+    alert("Please enter a valid number!");
+  }
 }
