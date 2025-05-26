@@ -57,10 +57,8 @@ e.crops.addEventListener("change", () => {
 
   showElement(e.cropsVariant);
   showElement(e.variantLabel);
- 
-  while (e.cropsVariant.options.length > 1) {
-    e.cropsVariant.remove(1);
-  }
+  e.cropsVariant.innerHTML = `<option>-- Select Variant --</option>`;
+
   cropsVariant[data].forEach(x => {;
     e.cropsVariant.appendChild(createElement(null, "option", {
       text: x,
@@ -75,7 +73,7 @@ e.addCrop.addEventListener("click", () => {
   const data = e.cropsVariant.value;
   const amount = askPrompt("Please enter the amount of " + data, e, data)
   if (amount === undefined || amount === null) return;
-  const li = createElement(e.cropList, "list", {text: `${data}: x ${amount.toLocaleString()}`});
+  const li = createElement(e.cropList, "li", {text: `${data}: x ${amount.toLocaleString()}`});
   li.dataset.crop = data;
   li.dataset.amount = amount;
   listButton(li, e, doneButton);
@@ -118,7 +116,7 @@ window.addEventListener("load", async () => {
   }
   if (cropData) {
     cropData.forEach(x => {
-      const li = createElement(e.cropList, "list", {text: x.text});
+      const li = createElement(e.cropList, "li", {text: x.text});
       li.dataset.crop = x.crop;
       li.dataset.amount = x.amount;
       listButton(li, e, doneButton);
@@ -126,7 +124,7 @@ window.addEventListener("load", async () => {
   }
   if (cropDataDone) {
     cropDataDone.forEach(x => {
-      const li = createElement(e.cropListDone, "list", {text: x.text});
+      const li = createElement(e.cropListDone, "li", {text: x.text});
       li.dataset.crop = x.crop;
       li.dataset.amount = x.amount;
       li.classList.add("done");

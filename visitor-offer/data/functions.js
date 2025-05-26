@@ -1,3 +1,4 @@
+//Loading data
 export async function fetchData () {
   try {
     const res = await fetch("./data/cropsVariant.json");
@@ -25,6 +26,7 @@ export function loadStorage(key) {
   return storage;
 }
 
+//Create and manipulate HTML & CSS elements
 export function createElement (element, tag, option = {}) {
   /*
   Creates an HTML element with text, value, class, id, dataset, and attributes. arg for option = (text, value, class, id, dataset(obj), attributes(obj))
@@ -52,6 +54,7 @@ export function showElement (element) {
   element.classList.remove("hidden");
 }
 
+// Main functions for crop list management
 export function listButton (element, e, doneButton) {
   createElement(element, "button", {text: "✔"} ).addEventListener("click", () => {
     element.classList.add("done");
