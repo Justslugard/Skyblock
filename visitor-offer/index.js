@@ -37,12 +37,10 @@ classElements.forEach(x => {
 e.cropsVariant.addEventListener("change", () => {
   if (e.cropsVariant.value === "") {
     hideElement(e.addCrop);
-    hideElement(e.reset);
     hideElement(e.save);
     return
   }
   showElement(e.addCrop);
-  showElement(e.reset);
   showElement(e.save);
 })
 
@@ -53,7 +51,6 @@ e.crops.addEventListener("change", () => {
     hideElement(e.cropsVariant);
     hideElement(e.variantLabel);
     hideElement(e.addCrop);
-    hideElement(e.reset);
     hideElement(e.save);
     return;
   }
@@ -76,10 +73,6 @@ e.crops.addEventListener("change", () => {
 
 e.addCrop.addEventListener("click", () => {
   const data = e.cropsVariant.value;
-  if (data === "") {
-    alert("Please select a crop variant");
-    return;
-  }
   const amount = askPrompt("Please enter the amount of " + data, e, data)
   if (amount === undefined || amount === null) return;
   const li = createElement(e.cropList, "list", {text: `${data}: x ${amount.toLocaleString()}`});
@@ -101,7 +94,7 @@ e.reset.addEventListener("click", () => {
 
 e.save.addEventListener("click", () => {
   if (e.cropList.children.length === 0 && e.cropListDone.children.length === 0) {
-    alert("Please add a crop before saving");
+    alert("There is no crop to save");
     return;
   }
   const confirmSave = confirm("Are you sure you want to save the crop list?");
@@ -112,12 +105,17 @@ e.save.addEventListener("click", () => {
 })
 
 window.addEventListener("load", async () => {
+  hideElement(e.addCrop);
+  hideElement(e.save);
   e.cropList.innerHTML = "";
   e.cropListDone.innerHTML = "";
   e.crops.value = "";
   e.cropsVariant.value = "";
   const cropData = loadStorage(cropsKey["list"]);
   const cropDataDone = loadStorage(cropsKey["done"]);
+  if (cropData !== null && cropDataDone !== null) {
+    showElement(e.reset);
+  }
   if (cropData) {
     cropData.forEach(x => {
       const li = createElement(e.cropList, "list", {text: x.text});
