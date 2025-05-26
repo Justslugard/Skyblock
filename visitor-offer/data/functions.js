@@ -47,11 +47,8 @@ export function createElement (element, tag, option = {}) {
   return el;
 }
 
-export function hideElement (element) {
-  element.classList.add("hidden");
-}
-export function showElement (element) {
-  element.classList.remove("hidden");
+export function setVisibility (display, ...elements) {
+  elements.forEach(x => x.classList[display === "hide" ? "add" : "remove"]("hidden"));
 }
 
 // Main functions for crop list management
@@ -96,13 +93,13 @@ export function doneButton (element, e, listButton) {
   })
 }
 
-export function resetList (e, cropsKey, hideElement) {
+export function resetList (e, cropsKey, toggleElement) {
   e.cropList.innerHTML = "";
   e.cropListDone.innerHTML = "";
   e.crops.value = "";
   e.cropsVariant.value = "";
-  hideElement(e.cropsVariant);
-  hideElement(e.variantLabel);
+  toggleElement(e.cropsVariant);
+  toggleElement(e.variantLabel);
   localStorage.removeItem(cropsKey["list"]);
   localStorage.removeItem(cropsKey["done"]);
 }

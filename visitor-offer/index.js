@@ -2,7 +2,7 @@
 // Global Variables and 
 // Functions
 //==========================
-import { fetchData, saveStorage, loadStorage, showElement, hideElement, listButton, doneButton, resetList, askPrompt, createElement } from "./data/functions.js";
+import { fetchData, saveStorage, loadStorage, setVisibility, listButton, doneButton, resetList, askPrompt, createElement } from "./data/functions.js";
 const idElements = ["cropList", "reset", "crops", "addCrop", "save", "cropsVariant", "variantLabel", "cropListDone"];
 const classElements = [".hidden", ".done"];
 const e = {};
@@ -36,28 +36,21 @@ classElements.forEach(x => {
 //==========================
 e.cropsVariant.addEventListener("change", () => {
   if (e.cropsVariant.value === "") {
-    hideElement(e.addCrop);
-    hideElement(e.save);
+    setVisibility("hide", e.addCrop, e.save);
     return
   }
-  showElement(e.addCrop);
-  showElement(e.save);
+  setVisibility("show", e.addCrop, e.save);
 })
-
 
 e.crops.addEventListener("change", () => {
   const data = e.crops.value;
   if (data === "") {
-    hideElement(e.cropsVariant);
-    hideElement(e.variantLabel);
-    hideElement(e.addCrop);
-    hideElement(e.save);
+    setVisibility("hide", e.cropsVariant, e.variantLabel, e.addCrop, e.save);
     return;
   }
 
-  showElement(e.cropsVariant);
-  showElement(e.variantLabel);
-  e.cropsVariant.innerHTML = `<option>-- Select Variant --</option>`;
+  setVisibility("show", e.cropsVariant, e.variantLabel);
+  e.cropsVariant.innerHTML = `<option value="">-- Select Variant --</option>`;
 
   cropsVariant[data].forEach(x => {;
     e.cropsVariant.appendChild(createElement(null, "option", {
@@ -86,7 +79,7 @@ e.reset.addEventListener("click", () => {
   }
   const confirmReset = confirm("Are you sure you want to reset the crop list?");
   if (!confirmReset) return;
-  resetList(e, cropsKey, hideElement);
+  resetList(e, cropsKey, setVisibility);
   alert("Crop List Reset!");
 })
 
@@ -103,8 +96,8 @@ e.save.addEventListener("click", () => {
 })
 
 window.addEventListener("load", async () => {
-  hideElement(e.addCrop);
-  hideElement(e.save);
+  setVisibility(e.addCrop);
+  setVisibility(e.save);
   e.cropList.innerHTML = "";
   e.cropListDone.innerHTML = "";
   e.crops.value = "";
@@ -112,7 +105,7 @@ window.addEventListener("load", async () => {
   const cropData = loadStorage(cropsKey["list"]);
   const cropDataDone = loadStorage(cropsKey["done"]);
   if (cropData !== null && cropDataDone !== null) {
-    showElement(e.reset);
+    setVisibility(e.reset);
   }
   if (cropData) {
     cropData.forEach(x => {
