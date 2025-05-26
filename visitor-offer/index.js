@@ -34,17 +34,33 @@ classElements.forEach(x => {
 //==========================
 // Event Section
 //==========================
+e.cropsVariant.addEventListener("change", () => {
+  if (e.cropsVariant.value === "") {
+    hideElement(e.addCrop);
+    hideElement(e.reset);
+    hideElement(e.save);
+    return
+  }
+  showElement(e.addCrop);
+  showElement(e.reset);
+  showElement(e.save);
+})
+
+
 e.crops.addEventListener("change", () => {
   const data = e.crops.value;
   if (data === "") {
     hideElement(e.cropsVariant);
     hideElement(e.variantLabel);
+    hideElement(e.addCrop);
+    hideElement(e.reset);
+    hideElement(e.save);
     return;
   }
 
   showElement(e.cropsVariant);
   showElement(e.variantLabel);
-
+ 
   while (e.cropsVariant.options.length > 1) {
     e.cropsVariant.remove(1);
   }
@@ -104,7 +120,7 @@ window.addEventListener("load", async () => {
   const cropDataDone = loadStorage(cropsKey["done"]);
   if (cropData) {
     cropData.forEach(x => {
-      const li = createElement(e.cropList, "list", {text: x.crop});
+      const li = createElement(e.cropList, "list", {text: x.text});
       li.dataset.crop = x.crop;
       li.dataset.amount = x.amount;
       listButton(li, e, doneButton);
@@ -112,7 +128,7 @@ window.addEventListener("load", async () => {
   }
   if (cropDataDone) {
     cropDataDone.forEach(x => {
-      const li = createElement(e.cropListDone, "list", {text: x.crop});
+      const li = createElement(e.cropListDone, "list", {text: x.text});
       li.dataset.crop = x.crop;
       li.dataset.amount = x.amount;
       li.classList.add("done");
