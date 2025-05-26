@@ -25,25 +25,24 @@ export function loadStorage(key) {
   return storage;
 }
 
-export function createOption(text) {
-  const option = document.createElement("option");
-  option.value = text;
-  option.textContent = text;
-  return option;
-}
-
-export function createList (element, text) {
-  const li = document.createElement("li");
-  li.textContent = text;
-  element.appendChild(li);
-  return li;
-}
-
-export function createButton (element, text) {
-  const button = document.createElement("button");
-  button.textContent = text;
-  element.appendChild(button);
-  return button;
+export function createElement (element, tag, option = {}) {
+  /*
+  Creates an HTML element with text, value, class, id, dataset, and attributes. arg for option = (text, value, class, id, dataset(obj), attributes(obj))
+   */
+  const el = document.createElement(tag);
+  if (option.text) el.textContent = option.text;
+  if (option.class) el.classList.add(...option.class.split(" "));
+  if (option.id) el.id = option.id;
+  if (option.dataset) {
+    Object.entries(option.dataset).forEach(([k, v]) => option.dataset[k] = v);
+  }
+  if (option.attrs) {
+    Object.entries(option.attrs).forEach(([k, v]) => {
+      el.setAttribute(k, v);
+    });
+  }
+  if (element) element.appendChild(el);
+  return el;
 }
 
 export function hideElement (element) {
@@ -54,14 +53,14 @@ export function showElement (element) {
 }
 
 export function listButton (element, e, doneButton) {
-  createButton(element, "✔").addEventListener("click", () => {
+  createElement(element, "button", {text: "✔"} ).addEventListener("click", () => {
     element.classList.add("done");
     e.cropListDone.appendChild(element);
     if (element.classList.contains("done")) {
       doneButton(element, e, listButton);
     }
   })
-  createButton(element, "✎").addEventListener("click", () => {
+  createElement(element, "button", {text: "✎"} ).addEventListener("click", () => {
     const crop = element.dataset.crop;
     const amount = element.dataset.amount;
     const newAmount = askPrompt(`Please enter the new amount of ${crop}`, e, element, amount);
@@ -76,10 +75,10 @@ export function doneButton (element, e, listButton) {
   element.querySelectorAll("button").forEach(x => {
     x.remove();
   });
-  createButton(element, "❌").addEventListener("click", () => {
+  createElement(element, "button", {text: "❌"} ).addEventListener("click", () => {
     element.remove();
   })
-  createButton(element, "↺").addEventListener("click", () => {
+  createElement(element, "button", {text: "↺"} ).addEventListener("click", () => {
     element.classList.remove("done");
     element.querySelectorAll("button").forEach(x => {
       if (!(x.textContent === "✔" || x.textContent === "✎")) {
@@ -115,10 +114,10 @@ export function askPrompt (message, e, data, x = "") {
     if (!isNaN(amount) && amount > 0) {
       if (sameCrop) {
         const newAmount = parseInt(sameCrop.dataset.amount) + parseInt(amount);
-        sameCrop.dataset.amount = newAmount;
         sameCrop.textContent = `${data}: x ${newAmount.toLocaleString()}`;
         listButton(sameCrop, e, doneButton);
-        return;
+        sameCrop.dataset.amount = newAmount;
+        return null
       }
       return Number(amount);
     }

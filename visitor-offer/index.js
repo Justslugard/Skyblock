@@ -2,7 +2,7 @@
 // Global Variables and 
 // Functions
 //==========================
-import { createOption, createList, fetchData, saveStorage, loadStorage, showElement, hideElement, listButton, doneButton, resetList, askPrompt } from "./data/functions.js";
+import { fetchData, saveStorage, loadStorage, showElement, hideElement, listButton, doneButton, resetList, askPrompt, createElement } from "./data/functions.js";
 const idElements = ["cropList", "reset", "crops", "addCrop", "save", "cropsVariant", "variantLabel", "cropListDone"];
 const classElements = [".hidden", ".done"];
 const e = {};
@@ -49,7 +49,12 @@ e.crops.addEventListener("change", () => {
     e.cropsVariant.remove(1);
   }
   cropsVariant[data].forEach(x => {;
-    e.cropsVariant.appendChild(createOption(x));
+    e.cropsVariant.appendChild(createElement(null, "option", {
+      text: x,
+      attrs: {
+        value: x
+      }
+    }));
   })
 })
 
@@ -60,8 +65,8 @@ e.addCrop.addEventListener("click", () => {
     return;
   }
   const amount = askPrompt("Please enter the amount of " + data, e, data)
-  if (amount === undefined) return;
-  const li = createList(e.cropList, `${data}: x ${amount.toLocaleString()}`);
+  if (amount === undefined || amount === null) return;
+  const li = createElement(e.cropList, "list", {text: `${data}: x ${amount.toLocaleString()}`});
   li.dataset.crop = data;
   li.dataset.amount = amount;
   listButton(li, e, doneButton);
@@ -91,11 +96,15 @@ e.save.addEventListener("click", () => {
 })
 
 window.addEventListener("load", async () => {
+  e.cropList.innerHTML = "";
+  e.cropListDone.innerHTML = "";
+  e.crops.value = "";
+  e.cropsVariant.value = "";
   const cropData = loadStorage(cropsKey["list"]);
   const cropDataDone = loadStorage(cropsKey["done"]);
   if (cropData) {
     cropData.forEach(x => {
-      const li = createList(e.cropList, x.text);
+      const li = createElement(e.cropList, "list", {text: x.crop});
       li.dataset.crop = x.crop;
       li.dataset.amount = x.amount;
       listButton(li, e, doneButton);
@@ -103,7 +112,7 @@ window.addEventListener("load", async () => {
   }
   if (cropDataDone) {
     cropDataDone.forEach(x => {
-      const li = createList(e.cropListDone, x.text);
+      const li = createElement(e.cropListDone, "list", {text: x.crop});
       li.dataset.crop = x.crop;
       li.dataset.amount = x.amount;
       li.classList.add("done");
