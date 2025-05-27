@@ -96,8 +96,7 @@ e.save.addEventListener("click", () => {
 })
 
 window.addEventListener("load", async () => {
-  setVisibility(e.addCrop);
-  setVisibility(e.save);
+  setVisibility("hide", e.addCrop, e.save, e.reset);
   e.cropList.innerHTML = "";
   e.cropListDone.innerHTML = "";
   e.crops.value = "";
@@ -105,7 +104,7 @@ window.addEventListener("load", async () => {
   const cropData = loadStorage(cropsKey["list"]);
   const cropDataDone = loadStorage(cropsKey["done"]);
   if (cropData !== null && cropDataDone !== null) {
-    setVisibility(e.reset);
+    setVisibility("show", e.reset);
   }
   if (cropData) {
     cropData.forEach(x => {
@@ -121,7 +120,7 @@ window.addEventListener("load", async () => {
       li.dataset.crop = x.crop;
       li.dataset.amount = x.amount;
       li.classList.add("done");
-      doneButton(li, e, listButton);
+      doneButton(li, e, listButton, setVisibility);
     })
   }
   try {

@@ -1,7 +1,7 @@
-MY FIRST EVER REALLL PROJECTTT (REL NO FEK FEK)
+> MY FIRST EVER REALLL PROJECTTT (REL NO FEK FEK)
 
-**Skyblock Tools**
-Website with oncoming hypixel skyblock utility tools.
+# Skyblock Tools
+*Website with hypixel skyblock utility tools.*
 
 *Current Features*
 - Garden Visitor Tracking

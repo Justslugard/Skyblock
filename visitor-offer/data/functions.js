@@ -71,7 +71,7 @@ export function listButton (element, e, doneButton) {
   })
 }
 
-export function doneButton (element, e, listButton) {
+export function doneButton (element, e, listButton, visibilityFn) {
   element.querySelectorAll("button").forEach(x => {
     x.remove();
   });
@@ -86,20 +86,19 @@ export function doneButton (element, e, listButton) {
       }
     })
     element.querySelectorAll("button").forEach(x => {
-      x.classList.remove("hidden");
+      visibilityFn("show", x);
     });
     e.cropList.appendChild(element);
     listButton(element, e, doneButton);
   })
 }
 
-export function resetList (e, cropsKey, toggleElement) {
+export function resetList (e, cropsKey, visibilityFn) {
   e.cropList.innerHTML = "";
   e.cropListDone.innerHTML = "";
   e.crops.value = "";
   e.cropsVariant.value = "";
-  toggleElement(e.cropsVariant);
-  toggleElement(e.variantLabel);
+  visibilityFn("hide", e.cropsVariant, e.variantLabel, e.addCrop, e.save, e.reset);;
   localStorage.removeItem(cropsKey["list"]);
   localStorage.removeItem(cropsKey["done"]);
 }
