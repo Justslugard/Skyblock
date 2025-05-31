@@ -2,33 +2,15 @@
 // Global Variables and 
 // Functions
 //==========================
-import { fetchData, saveStorage, loadStorage, setVisibility, listButton, doneButton, resetList, askPrompt, createElement } from "./data/functions.js";
+import { fetchData, storageFn, setVisibility, listButton, doneButton, resetList, askPrompt, createElement, isObj } from "./functions/functions.js";
 const idElements = ["cropList", "reset", "crops", "addCrop", "save", "cropsVariant", "variantLabel", "cropListDone"];
-const classElements = [".hidden", ".done"];
 const e = {};
-const c = {};
 let cropsVariant = {};
-const cropsKey = {
-  list: "crops",
-  done: "cropsDone"
-};
 
 idElements.forEach(x => {
-  const el = document.getElementById(x);
-  if (el === null) {
-    console.log("Element not found: " + x);
-  } else {
-    e[x] = el;
-  }
-})
-
-classElements.forEach(x => {
-  const el = document.querySelectorAll(x);
-  if (el === null) {
-    console.log("Classes not found: " + x);
-  } else {
-    c[x] = el;
-  }
+  const el = document.querySelector(`#${x}`);
+  if (el === null) return console.error("Element not found:", x);
+  e[x] = el;
 })
 
 //==========================
@@ -43,16 +25,15 @@ e.cropsVariant.addEventListener("change", () => {
 })
 
 e.crops.addEventListener("change", () => {
-  const data = e.crops.value;
-  if (data === "") {
-    setVisibility("hide", e.cropsVariant, e.variantLabel, e.addCrop, e.save);
-    return;
+  setVisibility("hide", e.cropsVariant, e.variantLabel, e.addCrop, e.save)
+  if (e.crops.value !== "") {
+    setVisibility("show", e.cropsVariant, e.variantLabel);
+  } else if (e.cropsVariant.value !== "") {
+    setVisibility("show", e.addCrop, e.save);
   }
-
-  setVisibility("show", e.cropsVariant, e.variantLabel);
   e.cropsVariant.innerHTML = `<option value="">-- Select Variant --</option>`;
 
-  cropsVariant[data].forEach(x => {;
+  cropsVariant[e.crops.value].forEach(x => {;
     e.cropsVariant.appendChild(createElement(null, "option", {
       text: x,
       attrs: {
@@ -66,20 +47,17 @@ e.addCrop.addEventListener("click", () => {
   const data = e.cropsVariant.value;
   const amount = askPrompt("Please enter the amount of " + data, e, data)
   if (amount === undefined || amount === null) return;
-  const li = createElement(e.cropList, "li", {text: `${data}: x ${amount.toLocaleString()}`});
-  li.dataset.crop = data;
-  li.dataset.amount = amount;
+  const li = createElement(e.cropList, "li", {text: `${data}: x ${amount.toLocaleString()}`, dataset:{
+    crop: data,
+    amount: amount
+  }});
   listButton(li, e, doneButton);
 })
 
 e.reset.addEventListener("click", () => {
-  if (e.cropList.children.length === 0) {
-    alert("There is no crop to reset");
-    return;
-  }
   const confirmReset = confirm("Are you sure you want to reset the crop list?");
   if (!confirmReset) return;
-  resetList(e, cropsKey, setVisibility);
+  resetList(e, setVisibility);
   alert("Crop List Reset!");
 })
 
@@ -90,39 +68,20 @@ e.save.addEventListener("click", () => {
   }
   const confirmSave = confirm("Are you sure you want to save the crop list?");
   if (!confirmSave) return;
-  saveStorage(e.cropList.children, cropsKey["list"]);
-  saveStorage(e.cropListDone.children, cropsKey["done"]);
+  storageFn("set", x => ({
+    text: x.firstChild?.textContent,
+    ...(isObj(x.dataset) && {
+      dataset: {
+        crop: x.dataset?.crop,
+        amount: x.dataset?.amount
+      }
+    }),
+    ...(x.className === "done" && {class: x.className})
+  }), e.cropList, e.cropListDone)
   alert("Crop Saved!");
 })
 
 window.addEventListener("load", async () => {
-  setVisibility("hide", e.addCrop, e.save, e.reset);
-  e.cropList.innerHTML = "";
-  e.cropListDone.innerHTML = "";
-  e.crops.value = "";
-  e.cropsVariant.value = "";
-  const cropData = loadStorage(cropsKey["list"]);
-  const cropDataDone = loadStorage(cropsKey["done"]);
-  if (cropData !== null && cropDataDone !== null) {
-    setVisibility("show", e.reset);
-  }
-  if (cropData) {
-    cropData.forEach(x => {
-      const li = createElement(e.cropList, "li", {text: x.text});
-      li.dataset.crop = x.crop;
-      li.dataset.amount = x.amount;
-      listButton(li, e, doneButton);
-    })
-  }
-  if (cropDataDone) {
-    cropDataDone.forEach(x => {
-      const li = createElement(e.cropListDone, "li", {text: x.text});
-      li.dataset.crop = x.crop;
-      li.dataset.amount = x.amount;
-      li.classList.add("done");
-      doneButton(li, e, listButton, setVisibility);
-    })
-  }
   try {
     const data = await fetchData();
     cropsVariant = data;
@@ -130,5 +89,31 @@ window.addEventListener("load", async () => {
   } catch (error) {
     console.error("Error fetching crop data:", error);
     alert("Failed to load crop data. Please try again later.");
+  }
+  setVisibility("hide", e.addCrop, e.save, e.reset);
+  e.cropList.innerHTML = "";
+  e.cropListDone.innerHTML = "";
+  e.crops.value = "";
+  e.cropsVariant.value = "";
+  const cropData = storageFn("get", e.cropList, e.cropListDone);
+  if (cropData !== null) {
+    setVisibility("show", e.reset);
+    for (const key in cropData) {
+        cropData[key].forEach(x => {
+          const li = createElement(e[key], "li", {
+          text: x.text,
+          ...(x.class !== "" && {class: x.class}),
+          dataset: {
+            crop: x.dataset.crop,
+            amount: x.dataset.amount
+          }
+        }) 
+        if (li.className === "done") {
+          doneButton(li, e, listButton, setVisibility);
+        } else if (li.className === "") {
+          listButton(li, e, doneButton);
+        }
+      })
+    }
   }
 })
