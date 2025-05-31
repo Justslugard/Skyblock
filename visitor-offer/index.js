@@ -2,7 +2,8 @@
 // Global Variables and 
 // Functions
 //==========================
-import { fetchData, storageFn, setVisibility, listButton, doneButton, resetList, askPrompt, createElement, isObj } from "./functions/functions.js";
+import { listButton, doneButton, resetList, askPrompt } from "./functions/mainFn.js";
+import { setVisibility, fetchData, isObj, storageFn, createElement } from "./functions/utility.js";
 const idElements = ["cropList", "reset", "crops", "addCrop", "save", "cropsVariant", "variantLabel", "cropListDone"];
 const e = {};
 let cropsVariant = {};
@@ -57,7 +58,7 @@ e.addCrop.addEventListener("click", () => {
 e.reset.addEventListener("click", () => {
   const confirmReset = confirm("Are you sure you want to reset the crop list?");
   if (!confirmReset) return;
-  resetList(e, setVisibility);
+  resetList(e);
   alert("Crop List Reset!");
 })
 
@@ -109,7 +110,7 @@ window.addEventListener("load", async () => {
           }
         }) 
         if (li.className === "done") {
-          doneButton(li, e, listButton, setVisibility);
+          doneButton(li, e, listButton);
         } else if (li.className === "") {
           listButton(li, e, doneButton);
         }
