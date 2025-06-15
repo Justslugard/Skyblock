@@ -1,4 +1,4 @@
-import { setVisibility, createElement } from "./utility.js";
+import { setVisibility, createElement, isObj, family, deepMap, targetCh, hasUndefined } from "./utility.js";
 
 // Main functions for crop list management
 export function listButton (element, e, doneButton) {
@@ -69,5 +69,48 @@ export function askPrompt (message, e, data, x = "") {
       return Number(amount);
     }
     alert("Please enter a valid number!");
+  }
+}
+
+export function storageFn (method, ...save) {
+  let data;
+  // console.info(save); //debugging
+  if (save.length === 0) return console.error("Elements can't be empty!");
+  if (typeof save[0] === "function") {
+    [data = null, ...save] = save 
+  }
+  if (Array.from(save).some(x => typeof x !== "object")) return console.error("Invalid elements!");
+  const els = family(save);
+  switch (method) {
+    case "set":
+      if (data === null || typeof data !== "function") return console.error("Invalid data!");
+      for (const key in els) {
+        const storage = targetCh(els[key], 2).map(data);
+        console.log(storage)
+        if (!hasUndefined(storage)) {
+          localStorage.setItem(key, JSON.stringify(storage));
+        }
+      }
+      break;
+    case "get":
+      let storage = {};
+      for (const key in els) {
+        const dats = JSON.parse(localStorage.getItem(key)) ?? [];
+        if (dats.length !== 0) storage[key] = dats;
+      }
+      return isObj(storage) ? storage : null; 
+    case "remove":
+      for (const key in els) {
+        if (localStorage.getItem(key) !== null) {
+          localStorage.removeItem(key);
+          console.log(`Successfully remove ${key}!`)
+        } else console.error(`No storage with the name ${key}!`);
+      }
+      break;
+    case "clear":
+      if (localStorage.length !== 0) {
+        localStorage.clear();
+        console.log("Successfully clear all storage!")
+      } else console.error("There aren't any storage!")
   }
 }

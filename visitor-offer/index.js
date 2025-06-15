@@ -2,8 +2,8 @@
 // Global Variables and 
 // Functions
 //==========================
-import { listButton, doneButton, resetList, askPrompt } from "./functions/mainFn.js";
-import { setVisibility, fetchData, isObj, storageFn, createElement } from "./functions/utility.js";
+import { listButton, doneButton, resetList, askPrompt, storageFn } from "./functions/mainFn.js";
+import { setVisibility, fetchData, isObj, createElement } from "./functions/utility.js";
 const idElements = ["cropList", "reset", "crops", "addCrop", "save", "cropsVariant", "variantLabel", "cropListDone"];
 const e = {};
 let cropsVariant = {};
@@ -32,9 +32,10 @@ e.crops.addEventListener("change", () => {
   } else if (e.cropsVariant.value !== "") {
     setVisibility("show", e.addCrop, e.save);
   }
+
   e.cropsVariant.innerHTML = `<option value="">-- Select Variant --</option>`;
 
-  cropsVariant[e.crops.value].forEach(x => {;
+  cropsVariant[e.crops.value]?.forEach(x => {;
     e.cropsVariant.appendChild(createElement(null, "option", {
       text: x,
       attrs: {
@@ -42,6 +43,7 @@ e.crops.addEventListener("change", () => {
       }
     }));
   })
+
 })
 
 e.addCrop.addEventListener("click", () => {
@@ -111,7 +113,7 @@ window.addEventListener("load", async () => {
         }) 
         if (li.className === "done") {
           doneButton(li, e, listButton);
-        } else if (li.className === "") {
+        } else {
           listButton(li, e, doneButton);
         }
       })

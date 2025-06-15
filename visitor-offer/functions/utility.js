@@ -1,14 +1,4 @@
 //Tools and utility for DOM
-export function isObj (obj) {
-  if (Object.keys(obj).length !== 0 && typeof obj === "object" && obj) return true;
-  return false;
-}
-
-export function setVisibility (display, ...elements) {
-  elements.forEach(x => x.classList[display === "hide" ? "add" : "remove"]("hidden"));
-}
-
-
 export async function fetchData () {
   try {
     const res = await fetch("./data/cropsVariant.json");
@@ -21,65 +11,70 @@ export async function fetchData () {
   }
 }
 
-export function storageFn (method, ...save) {
-  let data;
-  //console.info(save); //debugging
-  if (save.length === 0) return console.error("Elements can't be empty!");
-  if (typeof save[0] === "function") {
-    [data = null, ...save] = save 
-  }
-  if (Array.from(save).some(x => typeof x !== "object")) return console.error("Invalid elements!");
-  //console.info(save); //debugging
-  const el = Array.from(save).flat(Infinity).map(x => {
-    if (x.children?.length > 0) {
-      //console.info(x) //debugging
-      return x.children;
+export function isObj (obj) {
+  if (obj === undefined) return false;
+  if (Object.keys(obj).length !== 0 && typeof obj === "object" && obj && !Array.isArray(obj)) return true;
+  return false;
+}
+
+export function setVisibility (display, ...elements) {
+  elements.forEach(x => x.classList[display === "hide" ? "add" : "remove"]("hidden"));
+}
+
+export function family (els) {
+  let newEls = {}
+  
+  for (const el of els) {
+    const name = el.id || Array.from(els).indexOf(el);
+    if (el.children.length > 0 && el.children) {
+      const mm = family(el.children);
+      newEls[name] = {
+        parent: el,
+        children: Object.values(mm).flat(Infinity)
+      }
     } else {
-      //console.info(x) //debugging
-      return x;
+      newEls[name] = newEls[name] || []
+      newEls[name].push(el);
     }
-  }).map(x => {
-    if (x.length !== undefined) {
-      return [...x];
-    } else return x;
-  }).flat(Infinity);
-  //console.info(el); //debugging
-  const comb = el.reduce((acc, curr) => {
-    const name = (curr.id || curr.parentElement?.id) || (curr.className || curr.parentElement?.className);
-    acc[name] = acc[name] || [];
-    acc[name].push(curr);
-    return acc;
-  }, {})
-  //console.info(comb); //debugging
-  switch (method) {
-    case "set":
-      if (data === null || typeof data !== "function") return console.error("Invalid data!");
-      for (const key in comb) {
-        const storage = comb[key].map(data);
-        localStorage.setItem(key, JSON.stringify(storage));
-      }
-      break;
-    case "get":
-      let storage = {};
-      for (const key in comb) {
-        const dats = JSON.parse(localStorage.getItem(key)) ?? [];
-        if (dats.length !== 0) storage[key] = dats;
-      }
-      return isObj(storage) ? storage : null; 
-    case "remove":
-      for (const key in comb) {
-        if (localStorage.getItem(key) !== null) {
-          localStorage.removeItem(key);
-          console.log(`Successfully remove ${key}!`)
-        } else console.error(`No storage with the name ${key}!`);
-      }
-      break;
-    case "clear":
-      if (localStorage.length !== 0) {
-        localStorage.clear();
-        console.log("Successfully clear all storage!")
-      } else console.error("There aren't any storage!")
   }
+  return newEls;
+}
+
+export function targetCh (arr, loop, co = 1) {
+  // console.log(co, arr)
+  if ((Array.isArray(arr) ? isObj(...arr) : isObj(arr)) && co < loop) {
+    co++;
+    const v = isObj(arr) ? targetCh(arr.children, loop, co) : arr.map(x => targetCh(x.children, loop, co));
+    return v?.flat();
+  } else if (arr instanceof Object) {
+    if ((Array.isArray(arr) ? !isObj(...arr) : !isObj(arr))) {
+      return arr;
+    } else {
+      return isObj(arr) ? arr.parent : arr.map(x => x.parent);
+    }
+  } else {
+    console.error("Ts Pmo")
+    return arr;
+  }
+}
+
+export function hasUndefined(data) {
+if (data === undefined) return true;
+  if (Array.isArray(data)) {
+    return data.some(item => hasUndefined(item));
+  } else if (typeof data === 'object' && data !== null) {
+    return Object.values(data).some(item => hasUndefined(item));
+  }
+  return false;
+}
+
+
+export function deepMap (arr, fn) {
+  const newArr = arr.map(a => {
+    if (a === undefined || a === null) return a;
+    return Array.isArray(a) ? deepMap(a, fn) : fn(a);
+  })
+  return newArr;
 }
 
 export function createElement (element, tag, option = {}) {
