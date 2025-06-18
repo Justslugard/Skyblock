@@ -11,3 +11,8 @@
 - Skill XP Calculator
 - Best money making method?
 - More...
+
+Thank You
+- Allah SWT
+- My parents
+- Mila (🤫)
